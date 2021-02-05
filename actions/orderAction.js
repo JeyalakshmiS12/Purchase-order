@@ -27,12 +27,9 @@ OrderAction.prototype.orderCreation = function (input){
             uri: config.productServiceUrl,
             json: true // Automatically stringifies the body to JSON
         }
-
         return requestPromise(options)
             .then((productResponse)=>{
-
                 if(productResponse){
-
                     console.log("productResponse",productResponse.status)
                     let productId = productResponse.data.product ? productResponse.data.product.productId ? productResponse.data.product.productId: null :null
                     input['productId'] = productId;
@@ -157,14 +154,6 @@ OrderAction.prototype.orderUpdation = function (input){
                 reject(response)
             })
 
-
-
-
-
-
-
-
-
     })
 }
 
@@ -175,7 +164,6 @@ OrderAction.prototype.orderList = function (input){
         data:{},
         err:{}
     }
-    console.log("Input for Order Result",input)
 
     return new Promise((resolve,reject)=>{
         this.orderServiceInstance.orderList(input.customerId)
@@ -194,8 +182,6 @@ OrderAction.prototype.orderList = function (input){
                 reject(e);
             })
     })
-
-
 }
 
 OrderAction.prototype.orders = function (input){
@@ -230,7 +216,6 @@ OrderAction.prototype.orders = function (input){
 }
 
 OrderAction.prototype.orderbyCount = function(input){
-    console.log("input",input);
     let response = {
         status: "FAILURE",
         data:{},
@@ -240,9 +225,8 @@ OrderAction.prototype.orderbyCount = function(input){
         if(input && input.from && input.to){
             return this.timeConversion(input)
                 .then((timeResponse)=>{
-                    console.log("Response",timeResponse)
-
-                        return this.orderServiceInstance.orderCountbyDate(timeResponse)
+                    console.log("time Response",timeResponse)
+                    return this.orderServiceInstance.orderCountbyDate(timeResponse)
                 })
                 .then((countRes)=>{
                     if(countRes && countRes.length>0){
@@ -250,7 +234,7 @@ OrderAction.prototype.orderbyCount = function(input){
                         response['data']['from']= input.from;
                         response['data']['to']= input.to;
                         response['data']['OrderedCount']= countRes.length;
-                        response['data']['message']="Order COunt by date";
+                        response['data']['message']="Order Count by date";
                     }
                     else{
                         response['data']['message']="No Order for particular Date";
@@ -271,15 +255,10 @@ OrderAction.prototype.timeConversion = function (input){
     let timeMillis ={}
     if(input && input.from && input.to){
         return new Promise((resolve,reject)=>{
-            console.log("Input",input)
             let startTimeMillis= new Date(input.from).setHours(0,0,0)
             let endTimeMillis = new Date(input.to).setHours(23,59,59)
-            console.log("startTimeMillis",startTimeMillis)
-            console.log("endTimeMillis",endTimeMillis)
-
             timeMillis['startTimeMillis'] = startTimeMillis
             timeMillis['endTimeMillis'] = endTimeMillis;
-
             resolve(timeMillis) ;
         })
     }

@@ -168,26 +168,23 @@ async function orderIteration(input){
         return orderModel.find({customerId:id},{productModel:1,productBrand:1,productModel:1,_id:0,orderedTime:1})
             .then((res)=>{
                 // console.log("res",res)
-                let orderObject = {
-                    orderCount :0,
-                    orderObj :[]
+                if(res && res.length>0){
+                    let orderObject = {
+                        orderCount :0,
+                        orderObj :[]
+                    }
+                    orderObject['customerId']=id
+                    orderObject['orderCount']=res.length
+                    orderObject['orderObj']=res
+                    response.push(orderObject)
                 }
-                orderObject['customerId']=id
-                orderObject['orderCount']=res.length
-                orderObject['orderObj']=res
-                console.log("orderObject",orderObject)
-                response.push(orderObject)
                 return orderObject;
             })
 
     })
     let orderResult = await Promise.all(promises)
-
-    console.log("Response",response)
-    return orderResult;
+    return response;
 }
-
-
 
 OrderService.prototype.orders = function(input){
 
@@ -201,18 +198,17 @@ OrderService.prototype.orders = function(input){
     if(input.sortBy){
          sortInput[input.sortBy] = 1
     }
-
-   return orderModel.find(query,{_id:0,__v:0}).sort(sortInput)
+   return orderModel.find(query,{_id:0,__v:0,productId:0,customerId:0,orderId:0,email:0,customerName:0,orderState:0}).sort(sortInput)
        .then((orderResult)=>{
            console.log("orderResult",orderResult)
            return orderResult;
        })
 }
 OrderService.prototype.orderCountbyDate = function(input){
-console.log("INput",input);
+
    return orderModel.find({orderedTime:{$gt:input.startTimeMillis,$lte:input.endTimeMillis},orderState:"ORDERED"})
        .then((orderResult)=>{
-           console.log("orderResult",orderResult.length)
+           console.log("Order Count for Particular Date",orderResult.length)
            return orderResult;
        })
 }
