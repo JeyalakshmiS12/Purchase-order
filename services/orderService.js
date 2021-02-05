@@ -56,7 +56,6 @@ OrderService.prototype.orderCreation = function(input){
 }
 OrderService.prototype.orderCancellation = function(input){
 
-    console.log("Input for the order cancellation",input)
     // let cancellation = false;
     if(input){
         let query = {
@@ -80,12 +79,8 @@ OrderService.prototype.orderCancellation = function(input){
 
             })
             .then((response)=>{
-                // if(response){
-                    response.cancellation = true;
-                    console.log(response,"Response");
-                    return response;
-                // }
-                // return response
+                response.cancellation = true;
+                return response;
             })
             .catch((e)=>{
                 console.log(e)
@@ -165,7 +160,7 @@ async function orderIteration(input){
     }
     const response =[]
     let promises = input.map(function(id){
-        return orderModel.find({customerId:id},{productModel:1,productBrand:1,productModel:1,_id:0,orderedTime:1})
+        return orderModel.find({customerId:id,orderState:"ORDERED"},{productModel:1,productBrand:1,productModel:1,_id:0,orderedTime:1})
             .then((res)=>{
                 // console.log("res",res)
                 if(res && res.length>0){

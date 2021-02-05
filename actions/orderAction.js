@@ -169,10 +169,10 @@ OrderAction.prototype.orderList = function (input){
         this.orderServiceInstance.orderList(input.customerId)
             .then((result)=>{
                 response['status'] ="SUCCESS";
-                response['data']['orders'] = result;
-                if(result && result.length > 0){
+                if(result && result.length>0){
+                    response['data']['orders'] = result;
                     response['data']['messages'] = "Customers Purchased Orders";
-                }else{
+                } else{
                     response['data']['messages'] = "Customers doesn't have Orders";
                 }
                 resolve(response)
